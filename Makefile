@@ -37,7 +37,7 @@ DATA		:=	data
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_src
 APP_AUTHOR	:=	spx
-APP_VERSION	:=	0.1.0
+APP_VERSION	:=	0.1.1
 #ROMFS	:=	romfs
 
 #---------------------------------------------------------------------------------

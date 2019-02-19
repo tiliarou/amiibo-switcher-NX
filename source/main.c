@@ -60,7 +60,7 @@ int main(int argc, char **argv)
                         printf("Found %d amiibos\nUse the left stick to change the selection\nPress + to exit\n", amiiboCounter);
                 }
 
-                closedir(dir);
+                //closedir(dir);
         }
 
         while(appletMainLoop())
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 
                         if(kDown & KEY_A)
                         {
-                                dir = opendir(path);
+                                //dir = opendir(path);
 
                                 while ((ent = readdir(dir)))
                                 {

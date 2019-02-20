@@ -84,6 +84,8 @@ int main(int argc, char **argv)
 
                         if(kDown & KEY_A)
                         {
+                                closedir(dir);
+                                dir = opendir(path);
 
                                 while ((ent = readdir(dir)))
                                 {

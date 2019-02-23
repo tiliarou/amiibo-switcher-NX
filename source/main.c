@@ -76,10 +76,10 @@ int main(int argc, char **argv)
 
                         printf(CONSOLE_ESC(2K)"%d\r", selection);
 
-                        if(kDown & KEY_LSTICK_UP && selection < amiiboCounter)
+                        if((kDown & KEY_LSTICK_UP || kDown & KEY_DUP) && selection < amiiboCounter)
                                 selection++;
 
-                        if(kDown & KEY_LSTICK_DOWN && selection > 1)
+                        if((kDown & KEY_LSTICK_DOWN || kDown & KEY_DDOWN) && selection > 1)
                                 selection--;
 
                         if(kDown & KEY_A)

@@ -6,144 +6,148 @@
 
 const char path[] = "/amiibos/";
 
-bool cp(const char *from, const char *to)
+bool cp(const char * from, const char * to)
 {
-        char buf[BUFSIZ];
-        size_t size;
-        FILE* source = fopen(from, "rb");
-        FILE* dest = fopen(to, "wb");
+	char buf[BUFSIZ];
+	size_t size;
+	FILE * source = fopen(from, "rb");
+	FILE * dest = fopen(to, "wb");
 
-        if (source == NULL || dest == NULL)
-                return false;
+	if (source == NULL || dest == NULL)
+		return false;
 
-        while ((size = fread(buf, 1, BUFSIZ, source)) != 0)
-                fwrite(buf, 1, size, dest);
+	while ((size = fread(buf, 1, BUFSIZ, source)) != 0)
+		fwrite(buf, 1, size, dest);
 
-        fclose(source);
-        fflush(dest);
-        fclose(dest);
-        return true;
+	fclose(source);
+	fflush(dest);
+	fclose(dest);
+	return true;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char ** argv)
 {
-        consoleInit(NULL);
+	consoleInit(NULL);
 
-        DIR* dir;
-        struct dirent* ent;
-        int amiiboCounter = 0, ok = 0, selection = 1;
+	DIR * dir;
+	struct dirent * ent;
+	int amiiboCounter = 0, ok = 0, selection = 1;
 
-        dir = opendir(path);
+	dir = opendir(path);
 
-        if(dir == NULL)
-                printf("Failed to open dir.\nPress + to exit");
+	if (dir == NULL)
+		printf("Failed to open dir.\nPress + to exit");
 
-        else
-        {
-                printf("Bin-listing for '%s':\n", path);
+	else
+	{
+		printf("Bin-listing for '%s':\n", path);
 
-                while ((ent = readdir(dir)))
-                {
-                        if(strlen(ent->d_name) >= 5)
-                                if(!strcmp(".bin", ent->d_name + strlen(ent->d_name) - 4))
-                                {
-                                        amiiboCounter++;
-                                        printf("%d. %s\n", amiiboCounter, ent->d_name); 
-                                }
-                }
-                if(!amiiboCounter)
-                        printf("No bin files detected\nPress + to exit");
+		while ((ent = readdir(dir)))
+		{
+			if (strlen(ent->d_name) >= 5)
+				if (!strcmp(".bin", ent->d_name + strlen(ent->d_name) - 4))
+				{
+					amiiboCounter++;
+					printf("%d. %s\n", amiiboCounter, ent->d_name); 
+				}
+		}
+		if (!amiiboCounter)
+			printf("No bin files detected\nPress + to exit");
 
-                else
-                {
-                        ok = 1;
-                        printf("Found %d amiibos\nUse the left stick to change the selection\nPress + to exit\n", amiiboCounter);
-                }
+		else
+		{
+			ok = 1;
+			printf("Found %d amiibos\nUse the left stick to change the selection\nPress + to exit\n",
+					amiiboCounter);
+		}
 
-        }
+	}
 
-        while(appletMainLoop())
-        {
-                hidScanInput();
-                u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+	while (appletMainLoop())
+	{
+		hidScanInput();
+		u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
 
-                if (kDown & KEY_PLUS)
-                        break;
+		if (kDown & KEY_PLUS)
+			break;
 
-                if(ok)
-                {
-                        int selectionCounter = 0;
+		if (ok)
+		{
+			int selectionCounter = 0;
 
-                        printf(CONSOLE_ESC(2K)"%d\r", selection);
+			printf(CONSOLE_ESC(2K)"%d\r", selection);
 
-                        if((kDown & KEY_LSTICK_UP || kDown & KEY_DUP) && selection < amiiboCounter)
-                                selection++;
+			if ((kDown & KEY_LSTICK_UP || kDown & KEY_DUP) && selection < amiiboCounter)
+				selection++;
 
-                        if((kDown & KEY_LSTICK_DOWN || kDown & KEY_DDOWN) && selection > 1)
-                                selection--;
+			if ((kDown & KEY_LSTICK_DOWN || kDown & KEY_DDOWN) && selection > 1)
+				selection--;
 
-                        if(kDown & KEY_A)
-                        {
-                                closedir(dir);
-                                dir = opendir(path);
+			if (kDown & KEY_A)
+			{
+				closedir(dir);
+				dir = opendir(path);
 
-                                while ((ent = readdir(dir)))
-                                {
-                                        if(strlen(ent->d_name) >= 5)
-                                                if(!strcmp(".bin", ent->d_name + strlen(ent->d_name) - 4))
-                                                {
-                                                        selectionCounter++;
+				while ((ent = readdir(dir)))
+				{
+					if (strlen(ent->d_name) >= 5)
+						if (!strcmp(".bin", ent->d_name + strlen(ent->d_name) - 4))
+						{
+							selectionCounter++;
 
-                                                        if(selectionCounter == selection)
-                                                        {
-                                                                printf("\n%s is selected.\nDo you want to continue?\nA - yes\nB - back\n+ - exit\n", ent->d_name);
-                                                                consoleUpdate(NULL);
+							if (selectionCounter == selection)
+							{
+								printf("\n%s is selected.\nDo you want to continue?\nA - yes\nB - back\n"
+										"+ - exit\n", ent->d_name);
+								consoleUpdate(NULL);
 
-                                                                while(1)
-                                                                {
-                                                                        hidScanInput();
-                                                                        kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-                                                                        if(kDown & KEY_PLUS)
-                                                                                goto SHUTDOWN;
-                                                                
-                                                                        if(kDown & KEY_A)
-                                                                        {
-                                                                                char fullPath[strlen(ent->d_name) + strlen(path) + 1];
-                                                                                strcpy(fullPath, path);
-                                                                                strcpy(fullPath + strlen(path), ent->d_name);
-                                                                                
-                                                                                if(!cp(fullPath, "/amiibo.bin"))
-                                                                                        printf("\nCopying the file failed!\n");
+								while (1)
+								{
+									hidScanInput();
+									kDown = 
+										hidKeysDown(CONTROLLER_P1_AUTO);
+									if (kDown & KEY_PLUS)
+										goto SHUTDOWN;
 
-                                                                                else
-                                                                                        printf("OK!\n");
+									if (kDown & KEY_A)
+									{
+										char fullPath[strlen(ent->d_name) + strlen(path) + 1];
 
-                                                                                ok = 0;
-                                                                                goto WAITING;
-                                                                        }
-                                                                        if(kDown & KEY_B)
-                                                                        goto MAINLOOP;
-                                                                }
-                                                        }
-                                                }
-                                }
-                                WAITING:while(1)
-                                {
-                                        hidScanInput();
-                                        kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-                                        printf("\rPress + to exit.");
+										strcpy(fullPath, path);
+										strcpy(fullPath + strlen(path), ent->d_name);
 
-                                        if (kDown & KEY_PLUS)
-                                                goto SHUTDOWN;
-                                        
-                                        consoleUpdate(NULL);
-                                }
-                                MAINLOOP:;
-                        }
-                }
-                consoleUpdate(NULL);
-        }
-        SHUTDOWN:closedir(dir);
-        consoleExit(NULL);
-        return 0;
+										if (!cp(fullPath, "/amiibo.bin"))
+											printf("\nCopying the file failed!\n");
+
+										else
+											printf("OK!\n");
+
+										ok = 0;
+										goto WAITING;
+									}
+									if (kDown & KEY_B)
+										goto MAINLOOP;
+								}
+							}
+						}
+				}
+				WAITING:while(1)
+						{
+								hidScanInput();
+								kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+								printf("\rPress + to exit.");
+
+								if (kDown & KEY_PLUS)
+									goto SHUTDOWN;
+
+								consoleUpdate(NULL);
+						}
+				MAINLOOP:;
+			}
+		}
+		consoleUpdate(NULL);
+	}
+	SHUTDOWN:closedir(dir);
+	consoleExit(NULL);
+	return 0;
 }

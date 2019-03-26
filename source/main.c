@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
 				}
 		}
 		if (!count)
-			printf("No bin files detected\nPress + to exit");
+			printf(CONSOLE_RED"No bin files detected\nPress + to exit");
 		else {
 			ok = 1;
 			printf("Found %d amiibos\nUse the left stick to change the selected file\nPress + to exit\n",
@@ -114,7 +114,7 @@ int main(int argc, char ** argv)
 						strcpy(fullPath + strlen(path), options[selection]);
 
 						if (!cp(fullPath, "/amiibo.bin"))
-							printf("\nCopying the file failed!\n");
+							printf(CONSOLE_RED"\nCopying the file failed!\n");
 						else
 							printf(CONSOLE_GREEN"OK!\n");
 

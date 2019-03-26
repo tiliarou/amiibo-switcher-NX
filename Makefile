@@ -36,8 +36,9 @@ SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_src
+APP_TITLE	:=	Amiibo Switcher NX
 APP_AUTHOR	:=	spx
-APP_VERSION	:=	v0.1.1
+APP_VERSION	:=	v0.2.0
 #ROMFS	:=	romfs
 
 #---------------------------------------------------------------------------------
